@@ -22,7 +22,7 @@ namespace Excel.Linq {
 		#region const
 
 		/// <summary>
-		/// 
+		/// 省略可能引数に渡す値
 		/// </summary>
 		private static readonly object None = Type.Missing;
 
@@ -40,7 +40,7 @@ namespace Excel.Linq {
 		#region properties
 
 		/// <summary>
-		/// を取得します。
+		/// ワークシートのコレクションを取得します。
 		/// </summary>
 		public XlsWorksheets Worksheets {
 			get { return worksheets; }
@@ -62,9 +62,11 @@ namespace Excel.Linq {
 			worksheets = new XlsWorksheets(workbook.Sheets);
 		}
 
-		#endregion
-
-		#region methods
+		/// <summary>
+		/// デストラクタ
+		/// </summary>
+		~XlsWorkbook() {
+		}
 
 		#endregion
 
@@ -95,11 +97,9 @@ namespace Excel.Linq {
 		/// <see cref="IDisposable.Dispose()"/>
 		/// </summary>
 		public void Dispose() {
-			lock(this) {
-				Dispose(true);
+			Dispose(true);
 
-				GC.SuppressFinalize(this);
-			}
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion

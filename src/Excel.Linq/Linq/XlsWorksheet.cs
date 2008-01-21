@@ -2,11 +2,11 @@
 #region namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 using Excel.Interop;
-using System.Collections.Generic;
 
 #endregion
 
@@ -45,6 +45,13 @@ namespace Excel.Linq {
 		/// <param name="worksheet">Worksheetオブジェクト</param>
 		protected internal XlsWorksheet(Worksheet worksheet) {
 			this.worksheet = worksheet;
+		}
+
+		/// <summary>
+		/// デストラクタ
+		/// </summary>
+		~XlsWorksheet() {
+			Dispose();
 		}
 
 		#endregion
@@ -100,11 +107,9 @@ namespace Excel.Linq {
 		/// <see cref="IDisposable.Dispose()"/>
 		/// </summary>
 		public void Dispose() {
-			lock(this) {
-				Dispose(true);
+			Dispose(true);
 
-				GC.SuppressFinalize(this);
-			}
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion

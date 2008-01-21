@@ -59,13 +59,16 @@ namespace Excel.Linq {
 			this.worksheets = worksheets;
 		}
 
+		/// <summary>
+		/// デストラクタ
+		/// </summary>
+		~XlsWorksheets() {
+			Dispose();
+		}
+
 		#endregion
 
-		#region methods
-
-		#endregion
-
-		#region IEnumerable<XlsWorksheet> Members
+		#region IEnumerable<XlsWorksheet> メンバ
 
 		/// <summary>
 		/// <see cref="IEnumerable&lt;XlsWorksheet&gt;.GetEnumerator()"/>
@@ -77,7 +80,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IEnumerable Members
+		#region IEnumerable メンバ
 
 		/// <summary>
 		/// <see cref="IEnumerable.GetEnumerator()"/>
@@ -89,7 +92,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IQueryable Members
+		#region IQueryable メンバ
 
 		/// <summary>
 		/// <see cref="IQueryable.ElementType"/>
@@ -109,7 +112,7 @@ namespace Excel.Linq {
 		/// <see cref="IQueryable.Provider"/>
 		/// </summary>
 		IQueryProvider IQueryable.Provider {
-			get { return this; }
+			get { return null; }
 		}
 
 		#endregion
@@ -175,11 +178,9 @@ namespace Excel.Linq {
 		/// <see cref="IDisposable.Dispose()"/>
 		/// </summary>
 		public void Dispose() {
-			lock(this) {
-				Dispose(true);
+			Dispose(true);
 
-				GC.SuppressFinalize(this);
-			}
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion
