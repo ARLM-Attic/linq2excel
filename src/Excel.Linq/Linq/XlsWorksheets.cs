@@ -26,6 +26,8 @@ namespace Excel.Linq {
 
 		private Sheets worksheets;
 
+		private Expression expression;
+
 		#endregion
 
 		#region properties
@@ -60,10 +62,58 @@ namespace Excel.Linq {
 		}
 
 		/// <summary>
+		/// 生のWorksheetオブジェクトと列挙結果をフィルタリングする式を設定するコンストラクタ
+		/// </summary>
+		/// <param name="worksheets">Worksheetsオブジェクト</param>
+		/// <param name="expression">式</param>
+		private XlsWorksheets(Sheets worksheets, Expression expression)
+			: this(worksheets) {
+			this.expression = expression;
+		}
+
+		/// <summary>
 		/// デストラクタ
 		/// </summary>
 		~XlsWorksheets() {
 			Dispose();
+		}
+
+		#endregion
+
+		#region methods
+
+		/// <summary>
+		/// 指定した式を条件として、オブジェクトの列挙を行います。
+		/// </summary>
+		/// <param name="expression">式</param>
+		/// <returns>コレクション</returns>
+		private IEnumerable<XlsWorksheet> ExecuteExpression(Expression expression) {
+			Func<Worksheet, bool> predicate = ParseExpression(expression);
+
+			foreach(Worksheet worksheet in worksheets) {
+				if(predicate(worksheet)) yield return new XlsWorksheet(worksheet);
+			}
+		}
+
+		/// <summary>
+		/// 指定した式を解析して、適切なデリゲートに変換します。
+		/// </summary>
+		/// <param name="expression">式</param>
+		/// <returns>デリゲート</returns>
+		private Func<Worksheet, bool> ParseExpression(Expression expression) {
+			LambdaExpression lexpr = Expression.Lambda(
+				Expression.Constant(true),
+				Expression.Parameter(typeof(Worksheet), "s")
+			);
+			return (Func<Worksheet, bool>)lexpr.Compile();
+		}
+
+		/// <summary>
+		/// 式無しでアイテムの列挙のみを行います。
+		/// </summary>
+		/// <returns>コレクション</returns>
+		private IEnumerable<XlsWorksheet> ForEachWithoutExpression() {
+			foreach(Worksheet sheet in worksheets) yield return new XlsWorksheet(sheet);
 		}
 
 		#endregion
@@ -75,7 +125,7 @@ namespace Excel.Linq {
 		/// </summary>
 		/// <returns></returns>
 		public IEnumerator<XlsWorksheet> GetEnumerator() {
-			foreach(Worksheet sheet in worksheets) yield return new XlsWorksheet(sheet);
+			return Provider.Execute<IEnumerator<XlsWorksheet>>(Expression);
 		}
 
 		#endregion
@@ -97,22 +147,22 @@ namespace Excel.Linq {
 		/// <summary>
 		/// <see cref="IQueryable.ElementType"/>
 		/// </summary>
-		Type IQueryable.ElementType {
+		public Type ElementType {
 			get { return typeof(XlsWorksheet); }
 		}
 
 		/// <summary>
 		/// <see cref="IQueryable.Expression"/>
 		/// </summary>
-		Expression IQueryable.Expression {
-			get { return null; }
+		public Expression Expression {
+			get { return expression; }
 		}
 
 		/// <summary>
 		/// <see cref="IQueryable.Provider"/>
 		/// </summary>
-		IQueryProvider IQueryable.Provider {
-			get { return null; }
+		public IQueryProvider Provider {
+			get { return this; }
 		}
 
 		#endregion
@@ -126,7 +176,7 @@ namespace Excel.Linq {
 		/// <param name="expression"></param>
 		/// <returns></returns>
 		public IQueryable<TElement> CreateQuery<TElement>(Expression expression) {
-			return null;
+			return (IQueryable<TElement>)CreateQuery(expression);
 		}
 
 		/// <summary>
@@ -135,7 +185,7 @@ namespace Excel.Linq {
 		/// <param name="expression"></param>
 		/// <returns></returns>
 		public IQueryable CreateQuery(Expression expression) {
-			return null;
+			return new XlsWorksheets(this.worksheets, expression);
 		}
 
 		/// <summary>
@@ -145,7 +195,7 @@ namespace Excel.Linq {
 		/// <param name="expression"></param>
 		/// <returns></returns>
 		public TResult Execute<TResult>(Expression expression) {
-			throw new NotImplementedException();
+			return (TResult)Execute(expression);
 		}
 
 		/// <summary>
@@ -154,7 +204,10 @@ namespace Excel.Linq {
 		/// <param name="expression"></param>
 		/// <returns></returns>
 		public object Execute(Expression expression) {
-			throw new NotImplementedException();
+			return (expression != null ?
+				ExecuteExpression(expression) : ForEachWithoutExpression()
+
+			).GetEnumerator();
 		}
 
 		#endregion

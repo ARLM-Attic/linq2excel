@@ -14,7 +14,7 @@ namespace Excel.Linq {
 	#region XlsExtensionクラス
 
 	/// <summary>
-	/// ...のクラス
+	/// Excel.Linq の各クラスに対して拡張メソッドを提供するクラス
 	/// </summary>
 	public static class XlsExtension {
 
@@ -24,12 +24,11 @@ namespace Excel.Linq {
 		/// 
 		/// </summary>
 		/// <param name="collection"></param>
-		/// <param name="predicate"></param>
+		/// <param name="expression"></param>
 		/// <returns></returns>
-		public static IEnumerable<XlsWorksheet> Where(this IEnumerable<XlsWorksheet> collection, Predicate<XlsWorksheet> predicate) {
-			foreach(var o in collection) {
-				if(predicate(o)) yield return o;
-			}
+		public static IQueryable<XlsWorksheet> Where(
+			this IQueryable<XlsWorksheet> collection, Expression<Predicate<XlsWorksheet>> expression) {
+			return collection.Provider.CreateQuery<XlsWorksheet>(expression);
 		}
 
 		/// <summary>
@@ -38,7 +37,8 @@ namespace Excel.Linq {
 		/// <param name="collection"></param>
 		/// <param name="expression"></param>
 		/// <returns></returns>
-		public static IQueryable<XlsCell> Where(this IQueryable<XlsCell> collection, Expression<Predicate<XlsCell>> expression) {
+		public static IQueryable<XlsCell> Where(
+			this IQueryable<XlsCell> collection, Expression<Predicate<XlsCell>> expression) {
 			return collection.Provider.CreateQuery<XlsCell>(expression);
 		}
 
