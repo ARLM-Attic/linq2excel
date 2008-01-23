@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Linq;
 
 namespace Excel.Linq {
 	class Program {
