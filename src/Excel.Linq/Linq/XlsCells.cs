@@ -84,7 +84,7 @@ namespace Excel.Linq {
 		/// Expressionなしの結果セットを取得します。
 		/// </summary>
 		/// <returns>結果セット</returns>
-		private IEnumerable<XlsCell> ExecuteNone() {
+		private IEnumerable<XlsCell> ForEachWithoutExpression() {
 			foreach(Range cell in cells) yield return new XlsCell(cell);
 		}
 
@@ -94,14 +94,12 @@ namespace Excel.Linq {
 		/// <param name="expression">Expressionオブジェクト</param>
 		/// <returns>結果セット</returns>
 		protected virtual IEnumerable<XlsCell> ExecuteExpression(Expression expression) {
-			foreach(Range cell in cells) {
-			}
 			yield break;
 		}
 
 		#endregion
 
-		#region IEnumerable<XlsCell> メンバ
+		#region IEnumerable<XlsCell> member
 
 		/// <summary>
 		/// <see cref="IEnumerable&lt;XlsCell&gt;.GetEnumerator()"/>
@@ -113,7 +111,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IEnumerable メンバ
+		#region IEnumerable member
 
 		/// <summary>
 		/// <see cref="IEnumerable.GetEnumerator()"/>
@@ -125,7 +123,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IQueryable メンバ
+		#region IQueryable member
 
 		/// <summary>
 		/// <see cref="IQueryable.ElementType"/>
@@ -150,7 +148,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IQueryProvider メンバ
+		#region IQueryProvider member
 
 		/// <summary>
 		/// <see cref="IQueryProvider.CreateQuery&lt;TElement&gt;.CreateQuery(Expression)"/>
@@ -188,13 +186,14 @@ namespace Excel.Linq {
 		/// <returns></returns>
 		public object Execute(Expression expression) {
 			return (expression != null ?
-				ExecuteExpression(expression) : ExecuteNone()
+				ExecuteExpression(expression) : ForEachWithoutExpression()
+
 			).GetEnumerator();
 		}
 
 		#endregion
 
-		#region IDisposable メンバ
+		#region IDisposable member
 
 		/// <summary>
 		/// リソースを開放します。

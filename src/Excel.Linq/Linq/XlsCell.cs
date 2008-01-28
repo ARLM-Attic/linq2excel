@@ -74,7 +74,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IDisposable メンバ
+		#region IDisposable member
 
 		/// <summary>
 		/// リソースを開放します。

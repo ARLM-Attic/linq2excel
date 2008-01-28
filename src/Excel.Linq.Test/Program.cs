@@ -18,16 +18,16 @@ namespace Excel.Linq {
 			Action method2 = () => {
 				using(XlsWorkbook book = new XlsWorkbook("TestData\\100.xls")) {
 					using(XlsWorksheet sheet = book.Worksheets[0]) {
-						var cells = from c in sheet.Range("A1", "B5")
-									where c.Row > 1 && c.Column == 1
+						var cells = from c in sheet.Cells
+									where c.Text.Contains("hoge")
 									select c;
 
 						foreach(var cell in cells) Console.WriteLine(cell.Text);
 					}
 				}
 			};
-			method1();
-			//method2();
+			//method1();
+			method2();
 
 			Console.Read();
 		}

@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -22,101 +21,6 @@ namespace Excel.Linq {
 	/// Excelワークシートのコレクションに対する操作を提供するクラス
 	/// </summary>
 	public class XlsWorksheets : IQueryable<XlsWorksheet>, IQueryProvider, IDisposable {
-
-		#region innerClass
-
-		#region ExpressionRebuilder クラス
-
-		/// <summary>
-		/// 式を再構築するクラス
-		/// </summary>
-		private class ExpressionRebuilder {
-
-			#region fields
-
-			/// <summary>
-			/// XlsWorksheet型のParameterExpressionと置換するParameter
-			/// </summary>
-			private ParameterExpression paramExpr;
-
-			#endregion
-
-			#region constructors
-
-			/// <summary>
-			/// Worksheetのパラメータ名を設定するコンストラクタ
-			/// </summary>
-			/// <param name="name"></param>
-			public ExpressionRebuilder(string name) {
-				paramExpr = Expression.Parameter(typeof(Worksheet), name);
-			}
-
-			#endregion
-
-			#region methods
-
-			/// <summary>
-			/// 指定した式を解析して、ExpressionTreeを再構築します。
-			/// </summary>
-			/// <param name="expr"></param>
-			/// <returns></returns>
-			public Expression Rebuild(Expression expr) {
-				switch(expr.NodeType) {
-					case ExpressionType.Lambda:
-						return Expression.Lambda<Predicate<Worksheet>>(
-							Rebuild(((LambdaExpression)expr).Body),
-							((LambdaExpression)expr).Parameters.ToList().ConvertAll<ParameterExpression>(
-								p => (ParameterExpression)Rebuild(p)
-							)
-						);
-
-					case ExpressionType.Equal:
-					case ExpressionType.NotEqual:
-					case ExpressionType.GreaterThan:
-					case ExpressionType.GreaterThanOrEqual:
-					case ExpressionType.LessThan:
-					case ExpressionType.LessThanOrEqual:
-						BinaryExpression bexpr = (BinaryExpression)expr;
-
-						return (Expression)typeof(Expression).InvokeMember(expr.NodeType.ToString(),
-							BindingFlags.Public | BindingFlags.Static | BindingFlags.InvokeMethod,
-							null, null,
-							new object[] {
-								Rebuild(bexpr.Left),
-								Rebuild(bexpr.Right),
-								bexpr.IsLiftedToNull, bexpr.Method
-							}
-						);
-
-					case ExpressionType.Parameter:
-						return ((ParameterExpression)expr).Type == typeof(XlsWorksheet) ? paramExpr : expr;
-
-					case ExpressionType.MemberAccess:
-						MemberExpression mexpr = (MemberExpression)expr;
-						// XlsWorksheetであればメンバ名をマッピングする。
-						MemberInfo member = mexpr.Member.DeclaringType != typeof(XlsWorksheet) ?
-							mexpr.Member :
-							((Func<MemberInfo, MemberInfo>)((m) => {
-								if(m.Name == "Name") return typeof(_Worksheet).GetProperty("Name");
-
-								return typeof(_Worksheet).GetProperty(m.Name);
-
-							}))(mexpr.Member);
-
-						return Expression.Property(
-							Rebuild(mexpr.Expression), (PropertyInfo)member
-						);
-				}
-				return expr;
-			}
-
-			#endregion
-
-		}
-
-		#endregion
-
-		#endregion
 
 		#region fields
 
@@ -184,13 +88,10 @@ namespace Excel.Linq {
 		/// <param name="expression">式</param>
 		/// <returns>コレクション</returns>
 		private IEnumerable<XlsWorksheet> ExecuteExpression(Expression expression) {
-			Predicate<Worksheet> predicate = ParseExpression(expression);
+			Func<Worksheet, bool> predicate = ParseExpression(expression);
 
 			foreach(Worksheet worksheet in worksheets) {
 				if(predicate(worksheet)) yield return new XlsWorksheet(worksheet);
-				else {
-					Marshal.ReleaseComObject(worksheet);
-				}
 			}
 		}
 
@@ -199,19 +100,12 @@ namespace Excel.Linq {
 		/// </summary>
 		/// <param name="expression">式</param>
 		/// <returns>デリゲート</returns>
-		private Predicate<Worksheet> ParseExpression(Expression expression) {
-			Expression lexpr = RebuildExpression(expression);
-
-			return (Predicate<Worksheet>)((LambdaExpression)lexpr).Compile();
-		}
-
-		/// <summary>
-		/// 指定した式を解析して、ExpressionTreeを再構築します。
-		/// </summary>
-		/// <param name="expression">式</param>
-		/// <returns>Expression</returns>
-		private Expression RebuildExpression(Expression expression) {
-			return new ExpressionRebuilder("s").Rebuild(expression);
+		private Func<Worksheet, bool> ParseExpression(Expression expression) {
+			LambdaExpression lexpr = Expression.Lambda(
+				Expression.Constant(true),
+				Expression.Parameter(typeof(Worksheet), "s")
+			);
+			return (Func<Worksheet, bool>)lexpr.Compile();
 		}
 
 		/// <summary>
@@ -224,7 +118,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IEnumerable<XlsWorksheet> メンバ
+		#region IEnumerable<XlsWorksheet> member
 
 		/// <summary>
 		/// <see cref="IEnumerable&lt;XlsWorksheet&gt;.GetEnumerator()"/>
@@ -236,7 +130,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IEnumerable メンバ
+		#region IEnumerable member
 
 		/// <summary>
 		/// <see cref="IEnumerable.GetEnumerator()"/>
@@ -248,7 +142,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IQueryable メンバ
+		#region IQueryable member
 
 		/// <summary>
 		/// <see cref="IQueryable.ElementType"/>
@@ -273,7 +167,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IQueryProvider メンバ
+		#region IQueryProvider member
 
 		/// <summary>
 		/// <see cref="IQueryProvider.CreateQuery&lt;TElement&gt;.CreateQuery(Expression)"/>
@@ -318,7 +212,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IDisposable メンバ
+		#region IDisposable member
 
 		/// <summary>
 		/// リソースを開放します。

@@ -22,6 +22,10 @@ namespace Excel.Linq {
 		#region fields
 
 		private Worksheet worksheet;
+		/// <summary>
+		/// シートの全セル
+		/// </summary>
+		private XlsCells cells;
 
 		#endregion
 
@@ -35,6 +39,13 @@ namespace Excel.Linq {
 			set { worksheet.Name = value; }
 		}
 
+		/// <summary>
+		/// セルのコレクションを取得します。
+		/// </summary>
+		public XlsCells Cells {
+			get { return cells; }
+		}
+
 		#endregion
 
 		#region constructors
@@ -45,6 +56,7 @@ namespace Excel.Linq {
 		/// <param name="worksheet">Worksheetオブジェクト</param>
 		protected internal XlsWorksheet(Worksheet worksheet) {
 			this.worksheet = worksheet;
+			this.cells = new XlsCells(worksheet.Cells);
 		}
 
 		/// <summary>
@@ -88,7 +100,7 @@ namespace Excel.Linq {
 
 		#endregion
 
-		#region IDisposable メンバ
+		#region IDisposable member
 
 		/// <summary>
 		/// リソースを開放します。
