@@ -32,6 +32,8 @@ using System.Diagnostics;
 
 using Excel.Interop;
 
+using Coma2n.Commons;
+
 #endregion
 
 namespace Excel.Linq {
@@ -76,17 +78,27 @@ namespace Excel.Linq {
 		/// 生のRangeオブジェクトを設定するコンストラクタ
 		/// </summary>
 		/// <param name="cells">Rangeオブジェクト</param>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		protected internal XlsCells(Range cells) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(cells, "cells");
+			#endregion
+
 			this.cells = cells;
 		}
 
 		/// <summary>
-		/// 
+		/// 生のRangeオブジェクトとExpressionを設定するコンストラクタ
 		/// </summary>
-		/// <param name="cells"></param>
-		/// <param name="expression"></param>
+		/// <param name="cells">Rangeオブジェクト</param>
+		/// <param name="expression">Expression</param>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		private XlsCells(Range cells, Expression expression)
 			: this(cells) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(expression, "expression");
+			#endregion
+
 			this.expression = expression;
 		}
 

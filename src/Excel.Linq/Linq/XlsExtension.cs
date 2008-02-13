@@ -28,6 +28,8 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using Coma2n.Commons;
+
 #endregion
 
 namespace Excel.Linq {
@@ -42,24 +44,36 @@ namespace Excel.Linq {
 		#region methods
 
 		/// <summary>
-		/// 
+		/// 指定した述語に基づいて、シーケンスをフィルタリングします。
 		/// </summary>
-		/// <param name="collection"></param>
-		/// <param name="expression"></param>
-		/// <returns></returns>
+		/// <param name="collection">シーケンス</param>
+		/// <param name="expression">Expression</param>
+		/// <returns>フィルタリングされたシーケンス</returns>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		public static IQueryable<XlsWorksheet> Where(
 			this IQueryable<XlsWorksheet> collection, Expression<Predicate<XlsWorksheet>> expression) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(collection, "collection");
+			ArgumentValidation.CheckForNullReference(expression, "expression");
+			#endregion
+
 			return collection.Provider.CreateQuery<XlsWorksheet>(expression);
 		}
 
 		/// <summary>
-		/// 
+		/// 指定した述語に基づいて、シーケンスをフィルタリングします。
 		/// </summary>
-		/// <param name="collection"></param>
-		/// <param name="expression"></param>
-		/// <returns></returns>
+		/// <param name="collection">シーケンス</param>
+		/// <param name="expression">Expression</param>
+		/// <returns>フィルタリングされたシーケンス</returns>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		public static IQueryable<XlsCell> Where(
 			this IQueryable<XlsCell> collection, Expression<Predicate<XlsCell>> expression) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(collection, "collection");
+			ArgumentValidation.CheckForNullReference(expression, "expression");
+			#endregion
+
 			return collection.Provider.CreateQuery<XlsCell>(expression);
 		}
 

@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Coma2n.Commons, Version=0.0.0.0, Culture=neutral, PublicKeyToken=fbbb55b11e19d978, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\net-2.0\Coma2n.Commons.dll</HintPath>
+    </Reference>
     <Reference Include="Excel_11.Interop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=775cf1c849b9e158, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-2.0\Excel_11.Interop.dll</HintPath>

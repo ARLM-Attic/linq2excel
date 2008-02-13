@@ -29,6 +29,8 @@ using System.Diagnostics;
 
 using Excel.Interop;
 
+using Coma2n.Commons;
+
 #endregion
 
 namespace Excel.Linq {
@@ -75,7 +77,13 @@ namespace Excel.Linq {
 		/// 指定したExcelファイルを開くコンストラクタ
 		/// </summary>
 		/// <param name="fileName">ファイル名</param>
+		/// <exception cref="ArgumentException">引数が不正な時</exception>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		public XlsWorkbook(string fileName) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullOrEmpty(fileName, "fileName");
+			#endregion
+
 			xlsApp = new ApplicationClass();
 			workbook = xlsApp.Workbooks.Open(Path.GetFullPath(fileName),
 				None, true, None, None, None, None, None, None, None, None, None, None, None, None
@@ -87,6 +95,7 @@ namespace Excel.Linq {
 		/// デストラクタ
 		/// </summary>
 		~XlsWorkbook() {
+			Dispose();
 		}
 
 		#endregion

@@ -33,6 +33,8 @@ using System.Diagnostics;
 
 using Excel.Interop;
 
+using Coma2n.Commons;
+
 #endregion
 
 namespace Excel.Linq {
@@ -193,7 +195,12 @@ namespace Excel.Linq {
 		/// 生のWorksheetオブジェクトを設定するコンストラクタ
 		/// </summary>
 		/// <param name="worksheets">Worksheetオブジェクト</param>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		protected internal XlsWorksheets(Sheets worksheets) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(worksheets, "worksheets");
+			#endregion
+
 			this.worksheets = worksheets;
 		}
 
@@ -202,8 +209,13 @@ namespace Excel.Linq {
 		/// </summary>
 		/// <param name="worksheets">Worksheetsオブジェクト</param>
 		/// <param name="expression">式</param>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		private XlsWorksheets(Sheets worksheets, Expression expression)
 			: this(worksheets) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(expression, "expression");
+			#endregion
+
 			this.expression = expression;
 		}
 
@@ -251,10 +263,10 @@ namespace Excel.Linq {
 		}
 
 		/// <summary>
-		/// 
+		/// 指定したExpressionを再構築します。
 		/// </summary>
-		/// <param name="expression"></param>
-		/// <returns></returns>
+		/// <param name="expression">Expression</param>
+		/// <returns>Expression</returns>
 		private Expression RebuildExpression(Expression expression) {
 			return new ExpressionRebuilder("s").Rebuild(expression);
 		}

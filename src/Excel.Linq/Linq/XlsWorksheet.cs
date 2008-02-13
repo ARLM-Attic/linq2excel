@@ -29,6 +29,8 @@ using System.Diagnostics;
 
 using Excel.Interop;
 
+using Coma2n.Commons;
+
 #endregion
 
 namespace Excel.Linq {
@@ -75,7 +77,12 @@ namespace Excel.Linq {
 		/// 生のWorksheetオブジェクトを設定するコンストラクタ
 		/// </summary>
 		/// <param name="worksheet">Worksheetオブジェクト</param>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		protected internal XlsWorksheet(Worksheet worksheet) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(worksheet, "worksheet");
+			#endregion
+
 			this.worksheet = worksheet;
 			this.cells = new XlsCells(worksheet.Cells);
 		}

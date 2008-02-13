@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Coma2n.Commons</name>
+    </assembly>
+    <members>
+        <member name="T:Coma2n.Commons.ComponentModel.IConvertable">
+            <summary>
+            型コンバータと関連付けられた型をマークするインターフェース
+            </summary>
+        </member>
+        <member name="T:Coma2n.Commons.ComponentModel.TypeConverterExtension">
+            <summary>
+            TypeConverterに関する便利な操作を提供するユーティリティクラス
+            </summary>
+        </member>
+        <member name="M:Coma2n.Commons.ComponentModel.TypeConverterExtension.ConvertTo``1(Coma2n.Commons.ComponentModel.IConvertable)">
+            <summary>
+            指定したオブジェクトを（オブジェクトに）関連付けられた型コンバータを使って、指定した型に変換します。
+            </summary>
+            <typeparam name="T">変換先の型</typeparam>
+            <param name="obj">オブジェクト</param>
+            <returns>変換後の型</returns>
+            <exception cref="T:System.ArgumentNullException">引数がnullの時</exception>
+        </member>
+        <member name="M:Coma2n.Commons.ComponentModel.TypeConverterExtension.ConvertFrom``1(Coma2n.Commons.ComponentModel.IConvertable,System.Object)">
+            <summary>
+            指定したオブジェクトから指定した型に関連付けられた型コンバータを使って変換します。
+            </summary>
+            <typeparam name="T">変換先の型</typeparam>
+            <param name="obj">オブジェクト</param>
+            <param name="fromObj">変換元のオブジェクト</param>
+            <returns>変換後のオブジェクト</returns>
+            <exception cref="T:System.ArgumentNullException">引数がnullの時</exception>
+        </member>
+        <member name="T:Coma2n.Commons.ArgumentValidation">
+            <summary>
+            メソッドの引数をチェックする便利な操作を提供するユーティリティクラス
+            </summary>
+        </member>
+        <member name="M:Coma2n.Commons.ArgumentValidation.CheckForNullReference(System.Object,System.String)">
+            <summary>
+            指定したオブジェクトがnull参照かどうかをチェックします。
+            </summary>
+            <param name="obj">オブジェクト</param>
+            <param name="name">引数名</param>
+            <exception cref="T:System.ArgumentNullException">オブジェクトがnull参照の場合</exception>
+        </member>
+        <member name="M:Coma2n.Commons.ArgumentValidation.CheckForNullOrEmpty(System.String,System.String)">
+            <summary>
+            指定した文字列がnull参照か空文字列でないかどうかをチェックします。
+            </summary>
+            <param name="obj">文字列</param>
+            <param name="name">引数名</param>
+            <exception cref="T:System.ArgumentNullException">文字列がnull参照の場合</exception>
+            <exception cref="T:System.ArgumentException">文字列が空文字列の場合</exception>
+        </member>
+        <member name="M:Coma2n.Commons.ArgumentValidation.CheckForGreaterEqualZero(System.Int32,System.String)">
+            <summary>
+            指定した数値が0以上かどうかをチェックします。
+            </summary>
+            <param name="intValue">数値</param>
+            <param name="name">引数名</param>
+            <exception cref="T:System.ArgumentException">数値が0未満の場合</exception>
+        </member>
+    </members>
+</doc>

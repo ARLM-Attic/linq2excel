@@ -28,6 +28,8 @@ using System.Diagnostics;
 
 using Excel.Interop;
 
+using Coma2n.Commons;
+
 #endregion
 
 namespace Excel.Linq {
@@ -77,7 +79,12 @@ namespace Excel.Linq {
 		/// 生のRangeオブジェクトを設定するコンストラクタ
 		/// </summary>
 		/// <param name="cell">Rangeオブジェクト</param>
+		/// <exception cref="ArgumentNullException">引数がnullの時</exception>
 		protected internal XlsCell(Range cell) {
+			#region ArgumentValidation
+			ArgumentValidation.CheckForNullReference(cell, "cell");
+			#endregion
+
 			this.cell = cell;
 		}
 
