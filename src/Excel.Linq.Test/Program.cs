@@ -47,8 +47,8 @@ namespace Excel.Linq {
 					}
 				}
 			};
-			//method1();
-			method2();
+			method1();
+			//method2();
 
 			Console.Read();
 		}
